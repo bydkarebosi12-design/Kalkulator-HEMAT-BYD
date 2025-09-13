@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Keunggulan Finansial BYD</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+body {
+font-family: 'Inter', sans-serif;
+}
+.byd-blue { color: #003a70; }
+.byd-bg-blue { background-color: #003a70; }
+.savings-green { color: #16a34a; }
+.savings-bg-green { background-color: #f0fdf4; }
+.loss-red { color: #dc2626; }
+#formulaDetails, #comparisonSection {
+transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+overflow: hidden;
+}
+#resultSection {
+transition: opacity 0.5s ease-in-out;
+}
+.hidden-initially {
+opacity: 0;
+max-height: 0;
+}
+.input-description {
+font-size: 0.75rem; /* 12px */
+color: #6b7280; /* gray-500 */
+margin-top: 0.25rem; /* 4px */
+}
+.comparison-table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 1rem;
+}
+.comparison-table th, .comparison-table td {
+border: 1px solid #e5e7eb;
+padding: 0.75rem;
+text-align: left;
+vertical-align: top; 
+}
+.comparison-table th {
+background-color: #f9fafb;
+font-weight: 600;
+}
+.comparison-table .highlight {
+font-weight: 700;
+color: #003a70; 
+}
+.comparison-table .price-list div {
+margin-bottom: 0.5rem; 
+}
+.comparison-table .price-list div:last-child {
+margin-bottom: 0;
+}
+.comparison-table .features-list {
+    padding-left: 1.25rem;
+    margin: 0;
+}
+.comparison-table .features-list li {
+    margin-bottom: 0.25rem;
+}
+
+
+</style>
+</head>
+<body class="bg-gray-100">
+
+
+<div class="container mx-auto max-w-4xl p-4 md:p-8">
+
+
+<header class="text-center mb-8">
+<h1 class="text-3xl md:text-4xl font-bold byd-blue">Kalkulator Keunggulan Finansial BYD</h1>
+<p class="text-gray-600 mt-2">Buktikan penghematan nyata dengan beralih ke mobil listrik BYD.</p>
+</header>
+
+
+<!-- Input Section -->
+<div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
+<h2 class="text-2xl font-bold byd-blue mb-6 border-b pb-3">1. Parameter Perbandingan</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+
+<!-- Kolom Parameter Mobil Bensin -->
+<div>
+<h3 class="font-semibold text-lg mb-4 text-gray-700">Mobil Bensin Anda Saat Ini</h3>
+<div class="space-y-4">
+<div>
+<label for="iceConsumption" class="block text-sm font-medium text-gray-700">Konsumsi BBM (km/L)</label>
+<input type="number" id="iceConsumption" value="20" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Rata-rata jarak yang ditempuh dengan 1 liter bensin.</p>
+</div>
+<div>
+<label for="petrolPrice" class="block text-sm font-medium text-gray-700">Harga Bensin per Liter (Rp)</label>
+<input type="number" id="petrolPrice" value="10000" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Harga bahan bakar yang biasa Anda gunakan.</p>
+</div>
+<div>
+<label for="annualServiceIce" class="block text-sm font-medium text-gray-700">Biaya Servis Tahunan (Rp)</label>
+<input type="number" id="annualServiceIce" value="1193000" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Estimasi total biaya servis rutin dalam setahun.</p>
+</div>
+<div>
+<label for="annualTaxIce" class="block text-sm font-medium text-gray-700">Pajak Tahunan (PKB) (Rp)</label>
+<input type="number" id="annualTaxIce" value="2700000" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Biaya Pajak Kendaraan Bermotor tahunan mobil Anda.</p>
+</div>
+</div>
+</div>
+
+
+<!-- Kolom Parameter BYD & Umum -->
+<div>
+<h3 class="font-semibold text-lg mb-4 text-gray-700">Mobil BYD & Penggunaan</h3>
+<div class="space-y-4">
+<div>
+<label for="bydModel" class="block text-sm font-medium text-gray-700">Pilih Model BYD</label>
+<select id="bydModel" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<option value="atto1_premium">BYD Atto 1 Premium</option>
+<option value="dolphin_premium">BYD Dolphin Premium</option>
+<option value="atto3_superior">BYD Atto 3 Superior</option>
+<option value="seal_premium">BYD Seal Premium</option>
+<option value="sealion7_premium">BYD Sealion 7 Premium</option>
+<option value="m6_superior">BYD M6 Superior</option>
+<option value="denza_d9">DENZA D9</option>
+</select>
+<div id="bydSpecInfo" class="mt-2 text-xs text-gray-600 bg-gray-100 p-2 rounded-md"></div>
+</div>
+<div>
+<label for="monthlyMileage" class="block text-sm font-medium text-gray-700">Jarak Tempuh Bulanan (km)</label>
+<input type="number" id="monthlyMileage" value="1250" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Total kilometer perjalanan Anda setiap bulan.</p>
+</div>
+<div>
+<label for="electricityPrice" class="block text-sm font-medium text-gray-700">Harga Listrik per kWh (Rp)</label>
+<input type="number" id="electricityPrice" value="1700" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Harga per kWh sesuai tarif listrik rumah Anda.</p>
+</div>
+<div>
+<label for="annualServiceByd" class="block text-sm font-medium text-gray-700">Biaya Servis Tahunan BYD (Rp)</label>
+<input type="number" id="annualServiceByd" value="256500" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Umumnya lebih rendah dari mobil bensin.</p>
+</div>
+<div>
+<label for="annualTaxByd" class="block text-sm font-medium text-gray-700">Pajak Tahunan (PKB) BYD (Rp)</label>
+<input type="number" id="annualTaxByd" value="143000" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<p class="input-description">Pajak EV mendapatkan insentif dari pemerintah.</p>
+</div>
+</div>
+</div>
+<div class="md:col-span-2">
+<label for="ownershipPeriod" class="block text-sm font-medium text-gray-700">Hitung Penghematan untuk Periode Kepemilikan:</label>
+<select id="ownershipPeriod" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+<option value="1">1 Tahun</option>
+<option value="2">2 Tahun</option>
+<option value="3">3 Tahun</option>
+<option value="4">4 Tahun</option>
+<option value="5" selected>5 Tahun</option>
+<option value="6">6 Tahun</option>
+<option value="7">7 Tahun</option>
+<option value="8">8 Tahun</option>
+</select>
+</div>
+<div class="mt-8 text-center md:col-span-2">
+    <button id="calculateBtn" class="w-full md:w-auto byd-bg-blue text-white font-bold py-3 px-10 rounded-lg shadow-lg hover:bg-blue-800 transition-all duration-300 transform hover:scale-105">
+        HITUNG PENGHEMATAN
+    </button>
+</div>
+</div>
+</div>
+
+
+<!-- Result Section -->
+<div id="resultSection" class="bg-white p-6 rounded-2xl shadow-lg mt-8" style="display: none; opacity: 0;">
+<h2 class="text-2xl font-bold byd-blue mb-6 border-b pb-3">2. Hasil Perbandingan Biaya</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="border border-blue-200 p-4 rounded-lg bg-blue-50">
+<h3 id="bydModelNameResult" class="text-xl font-bold byd-blue text-center mb-4">BYD</h3>
+<div class="space-y-3">
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Listrik (Tahunan):</span><span id="bydEnergyCost" class="font-bold text-lg byd-blue text-right">Rp 0</span></div>
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Servis (Tahunan):</span><span id="bydServiceCost" class="font-bold text-lg byd-blue text-right">Rp 0</span></div>
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Pajak (Tahunan):</span><span id="bydTaxCost" class="font-bold text-lg byd-blue text-right">Rp 0</span></div><hr>
+<div class="flex justify-between items-center pt-2"><span class="font-semibold text-gray-800">Total Biaya Tahunan:</span><span id="bydTotalYearly" class="font-bold text-lg byd-blue">Rp 0</span></div>
+<div class="flex justify-between items-center pt-1"><span class="font-extrabold text-lg text-gray-800">Total Biaya <span id="bydPeriodLabel"></span>:</span><span id="bydTotalForPeriod" class="font-extrabold text-2xl byd-blue">Rp 0</span></div>
+</div>
+</div>
+<div class="border border-gray-300 p-4 rounded-lg">
+<h3 class="text-xl font-bold text-gray-700 text-center mb-4">Mobil Bensin Anda</h3>
+<div class="space-y-3">
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Bensin (Tahunan):</span><span id="iceEnergyCost" class="font-bold text-lg loss-red text-right">Rp 0</span></div>
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Servis (Tahunan):</span><span id="iceServiceCost" class="font-bold text-lg loss-red text-right">Rp 0</span></div>
+<div class="grid grid-cols-2 gap-2 items-center"><span class="font-semibold text-gray-600">Biaya Pajak (Tahunan):</span><span id="iceTaxCost" class="font-bold text-lg loss-red text-right">Rp 0</span></div><hr>
+<div class="flex justify-between items-center pt-2"><span class="font-semibold text-gray-800">Total Biaya Tahunan:</span><span id="iceTotalYearly" class="font-bold text-lg loss-red">Rp 0</span></div>
+<div class="flex justify-between items-center pt-1"><span class="font-extrabold text-lg text-gray-800">Total Biaya <span id="icePeriodLabel"></span>:</span><span id="iceTotalForPeriod" class="font-extrabold text-2xl loss-red">Rp 0</span></div>
+</div>
+</div>
+</div>
+<div class="mt-8">
+<h3 class="text-xl font-bold byd-blue text-center mb-4">Grafik Perbandingan Biaya Tahunan</h3>
+<div class="relative h-80 w-full"><canvas id="comparisonChart"></canvas></div>
+</div>
+<div id="comparisonSection" class="hidden-initially mt-8"></div>
+<div class="mt-8 savings-bg-green p-6 rounded-2xl shadow-lg border-2 border-green-500">
+<h2 class="text-2xl font-bold text-center savings-green mb-4">🎉 Total Potensi Penghematan Anda 🎉</h2>
+<div class="text-center">
+<p class="text-lg text-gray-700">Dengan beralih ke BYD, Anda berpotensi menghemat:</p>
+<div class="my-4"><span class="block text-xl font-semibold">Per Tahun</span><div class="text-4xl md:text-5xl font-black savings-green" id="yearlySavings">Rp 0</div></div>
+<div class="my-4"><span id="totalSavingsLabel" class="block text-xl font-semibold">Dalam 5 Tahun</span><div class="text-4xl md:text-5xl font-black savings-green" id="totalSavings">Rp 0</div></div>
+<p class="text-sm text-gray-600 mt-4">*Penghematan ini bisa digunakan untuk liburan, pendidikan, atau investasi lainnya!</p>
+</div>
+</div>
+</div>
+
+
+<!-- Video Section -->
+<div class="my-8">
+    <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BLADE BATTERY</h2>
+        <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/tCuuQIaHDMA?si=ZTzhgEWT4L1YtN_e" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+</div>
+
+
+<!-- Conditional Videos Container -->
+<div id="conditional-videos">
+    <!-- Sealion 7 Videos -->
+    <div id="sealionVideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BYD SEALION 7 Crash and safety test</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/XFA9b9QJokY?si=quqfWdoQVI6Gx6Xe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">Review BYD Sealion 7</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/AtdjbotkdSE?si=zmlClMicLxPyoKLv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- Atto 1 Videos -->
+    <div id="atto1VideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">REVIEW BYD ATTO 1</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/zV0LOFXWRz4?si=KXM2Ap68ooMTnra0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">ATTO 1 CRASH AND SAFETY TEST</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/NaWVepTJTGw?si=XBZfkd7dqfpt8Qyk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- Dolphin Videos -->
+    <div id="dolphinVideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BYD DOLPHIN CRASH AND SAFETY TEST</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/9H9jeF_ADG4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">REVIEW BYD DOLPHIN</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/qBHf1PzT4IE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- Atto 3 Videos -->
+    <div id="atto3VideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">REVIEW BYD ATTO 3</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/JyGROfuXggk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BYD ATTO 3 CRASH AND SAFETY TEST</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/7ThTci70350" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- Seal Videos -->
+    <div id="sealVideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BYD SEAL CRASH AND SAFETY TEST</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/3jxOt6mL6FQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">REVIEW BYD SEAL</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/50PU-cQx7j0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- M6 Video -->
+    <div id="m6VideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">BYD M6 REVIEW</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/-Le4UQwEj00" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+    <!-- Denza D9 Video -->
+    <div id="denzaVideoSection" style="display: none;">
+        <div class="bg-white p-6 rounded-2xl shadow-lg my-8">
+            <h2 class="text-2xl font-bold byd-blue mb-4 text-center">REVIEW DENZA D9</h2>
+            <iframe class="w-full aspect-video rounded-lg" src="https://www.youtube.com/embed/buoEtI4TF4w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+
+
+
+
+<footer class="text-center text-xs text-gray-500 mt-8 pt-8 border-t-2 border-dashed border-gray-300">
+<p>Data spesifikasi (baterai & jarak tempuh) berdasarkan brosur resmi BYD. Perhitungan ini adalah estimasi.</p>
+<p class="font-bold mt-2">BYD HAKA KAREBOSI</p>
+<p class="text-gray-600 mt-1">Jl. Ahmad Yani No.15, Pattunuang, Kec. Wajo, Kota Makassar, Sulawesi Selatan 90174</p>
+</footer>
+</div>
+
+
+<script>
+// --- DATA (Diperbarui sesuai brosur, gambar, dan segmen pasar) ---
+const bydData = {
+    'atto1_premium': { 
+        name: 'BYD Atto 1 Premium', 
+        battery: 38.68, 
+        range: 380,
+        efficiencyKwh: 1/6.6, 
+        price: 'Rp 250.000.000',
+        features: ["Blade Battery", "e-Platform 3.0", "10.1\" Intelligent Touch Screen", "V2L Function", "Wireless Charging"]
+    },
+    'dolphin_premium': { 
+        name: 'BYD Dolphin Premium', 
+        battery: 60.48, 
+        range: 490, 
+        price: 'Rp 444.000.000',
+        features: ["Blade Battery", "e-Platform 3.0", "12.8\" Rotating Screen", "V2L Function", "NFC Card Key"]
+    },
+    'atto3_superior': { 
+        name: 'BYD Atto 3 Superior', 
+        battery: 60.48, 
+        range: 480, 
+        price: 'Rp 535.000.000',
+        features: ["Blade Battery", "e-Platform 3.0", "15.6\" Rotating Screen", "V2L Mobile Power Station", "Panoramic Sunroof"]
+    },
+    'seal_premium': { 
+        name: 'BYD Seal Premium', 
+        battery: 82.56, 
+        range: 650, 
+        price: 'Rp 629.000.000',
+        features: ["Cell-to-Body (CTB)", "DiSus-C", "15.6\" Rotating Screen", "Panoramic Roof", "Head Up Display (HUD)"]
+    },
+    'sealion7_premium': { 
+        name: 'BYD Sealion 7 Premium', 
+        battery: 82.56, 
+        range: 567, 
+        price: 'Rp 644.000.000',
+        features: ["Cell-to-Body (CTB)", "12 Speaker Dynaudio", "Head Up Display (W-HUD)", "Ventilated Seats", "V2L Function"]
+    },
+    'm6_superior': { 
+        name: 'BYD M6 Superior', 
+        battery: 71.8, 
+        range: 530, 
+        price: 'Rp 448.000.000',
+        features: ["7-Seater MPV", "Blade Battery", "V2L Mobile Power Station", "12.8\" Rotating Screen", "Panoramic Skylight"]
+    },
+    'denza_d9': { 
+        name: 'DENZA D9', 
+        battery: 103.36, 
+        range: 600, 
+        price: 'Rp 990.000.000',
+        features: ["Luxury 7-Seater MPV", "Blade Battery", "Integrated Refrigerator", "Massage & Ventilated Captain Seats", "14 Speaker Dynaudio"]
+    }
+};
+
+
+const competitorData = {
+    'atto1_premium': {
+        ice: [ { name: 'Toyota Agya GR Sport CVT', price: 'Rp 276.400.000' }, { name: 'Honda Brio RS CVT', price: 'Rp 264.600.000' } ],
+        ev: { name: 'Wuling BinguoEV', price: 'Rp 358.000.000', battery: '31.9 kWh', range: '333 km' }
+    },
+    'dolphin_premium': {
+        ice: [ { name: 'Honda City Hatchback RS HS CVT', price: 'Rp 390.500.000' }, { name: 'Toyota Yaris GR Sport CVT', price: 'Rp 374.600.000' } ],
+        ev: { name: 'Wuling BinguoEV', price: 'Rp 358.000.000', battery: '31.9 kWh', range: '333 km' }
+    },
+    'atto3_superior': {
+        ice: [ { name: 'Honda HR-V RS Turbo CVT', price: 'Rp 552.600.000' }, { name: 'Toyota Corolla Cross Q CVT', price: 'Rp 540.900.000' } ],
+        ev: { name: 'Chery Omoda E5', price: 'Rp 488.800.000', battery: '61 kWh', range: '430 km' }
+    },
+    'seal_premium': {
+        ice: [ { name: 'Honda Accord RS e:HEV', price: 'Rp 959.900.000' }, { name: 'Toyota Camry 2.5 V', price: 'Rp 821.800.000' } ],
+        ev: { name: 'Hyundai Ioniq 6', price: 'Rp 1.220.000.000', battery: '77.4 kWh', range: '519 km' }
+    },
+    'sealion7_premium': {
+        ice: [ { name: 'Mazda CX-5 Elite', price: 'Rp 628.800.000' }, { name: 'Honda CR-V 1.5 Turbo', price: 'Rp 739.900.000' } ],
+        ev: { name: 'Hyundai Ioniq 5 Bluelink', price: 'Rp 895.000.000', battery: '72.6 kWh', range: '451 km' }
+    },
+    'm6_superior': {
+        ice: [ { name: 'Toyota Kijang Innova Zenix G', price: 'Rp 425.600.000' }, { name: 'Kia Carnival Premiere 11-seater', price: 'Rp 960.000.000' } ]
+    },
+    'denza_d9': {
+        ice: [ { name: 'Toyota Alphard 2.5 HEV CVT', price: 'Rp 1.869.700.000' }, { name: 'Toyota Alphard 2.5 G CVT', price: 'Rp 1.707.000.000' } ],
+        ev: { name: 'Kia EV9 GT-Line', price: 'Rp 1.975.000.000', battery: '99.8 kWh', range: '505 km' }
+    }
+};
+
+
+// --- DOM ELEMENTS MAPPING ---
+const elements = {
+    calculateBtn: document.getElementById('calculateBtn'),
+    iceConsumption: document.getElementById('iceConsumption'),
+    petrolPrice: document.getElementById('petrolPrice'),
+    annualServiceIce: document.getElementById('annualServiceIce'),
+    annualTaxIce: document.getElementById('annualTaxIce'),
+    bydModel: document.getElementById('bydModel'),
+    bydSpecInfo: document.getElementById('bydSpecInfo'),
+    monthlyMileage: document.getElementById('monthlyMileage'),
+    electricityPrice: document.getElementById('electricityPrice'),
+    annualServiceByd: document.getElementById('annualServiceByd'),
+    annualTaxByd: document.getElementById('annualTaxByd'),
+    ownershipPeriod: document.getElementById('ownershipPeriod'),
+    resultSection: document.getElementById('resultSection'),
+    bydModelNameResult: document.getElementById('bydModelNameResult'),
+    bydEnergyCost: document.getElementById('bydEnergyCost'),
+    bydServiceCost: document.getElementById('bydServiceCost'),
+    bydTaxCost: document.getElementById('bydTaxCost'),
+    bydTotalYearly: document.getElementById('bydTotalYearly'),
+    bydTotalForPeriod: document.getElementById('bydTotalForPeriod'),
+    iceEnergyCost: document.getElementById('iceEnergyCost'),
+    iceServiceCost: document.getElementById('iceServiceCost'),
+    iceTaxCost: document.getElementById('iceTaxCost'),
+    iceTotalYearly: document.getElementById('iceTotalYearly'),
+    iceTotalForPeriod: document.getElementById('iceTotalForPeriod'),
+    yearlySavings: document.getElementById('yearlySavings'),
+    totalSavingsLabel: document.getElementById('totalSavingsLabel'),
+    totalSavings: document.getElementById('totalSavings'),
+    comparisonContainer: document.getElementById('comparisonSection'),
+    chartCanvas: document.getElementById('comparisonChart').getContext('2d'),
+    sealionVideoSection: document.getElementById('sealionVideoSection'),
+    atto1VideoSection: document.getElementById('atto1VideoSection'),
+    dolphinVideoSection: document.getElementById('dolphinVideoSection'),
+    atto3VideoSection: document.getElementById('atto3VideoSection'),
+    sealVideoSection: document.getElementById('sealVideoSection'),
+    m6VideoSection: document.getElementById('m6VideoSection'),
+    denzaVideoSection: document.getElementById('denzaVideoSection'),
+    bydPeriodLabel: document.getElementById('bydPeriodLabel'),
+    icePeriodLabel: document.getElementById('icePeriodLabel')
+};
+
+
+let comparisonChart;
+
+
+// --- UTILITY FUNCTIONS ---
+function formatCurrency(value) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
+}
+
+
+// --- CORE FUNCTIONS ---
+function runCalculation() {
+    const inputs = {
+        modelKey: elements.bydModel.value,
+        monthlyMileage: parseFloat(elements.monthlyMileage.value) || 0,
+        petrolPrice: parseFloat(elements.petrolPrice.value) || 0,
+        iceConsumption: parseFloat(elements.iceConsumption.value) || 1,
+        electricityPrice: parseFloat(elements.electricityPrice.value) || 0,
+        annualServiceIce: parseFloat(elements.annualServiceIce.value) || 0,
+        annualServiceByd: parseFloat(elements.annualServiceByd.value) || 0,
+        annualTaxIce: parseFloat(elements.annualTaxIce.value) || 0,
+        annualTaxByd: parseFloat(elements.annualTaxByd.value) || 0,
+        ownershipPeriod: parseInt(elements.ownershipPeriod.value) || 1,
+    };
+    const selectedByd = bydData[inputs.modelKey];
+    if (!selectedByd) return; 
+    const yearlyMileage = inputs.monthlyMileage * 12;
+
+
+    const bydKwhPerKm = selectedByd.efficiencyKwh || (selectedByd.battery / selectedByd.range);
+    const bydYearlyEnergyCost = bydKwhPerKm * inputs.electricityPrice * yearlyMileage;
+    const bydTotalYearly = bydYearlyEnergyCost + inputs.annualServiceByd + inputs.annualTaxByd;
+
+
+    const iceYearlyEnergyCost = (yearlyMileage / inputs.iceConsumption) * inputs.petrolPrice;
+    const iceTotalYearly = iceYearlyEnergyCost + inputs.annualServiceIce + inputs.annualTaxIce;
+    
+    const yearlySavings = iceTotalYearly - bydTotalYearly;
+    const totalSavings = yearlySavings * inputs.ownershipPeriod;
+    
+    const bydTotalForPeriod = bydTotalYearly * inputs.ownershipPeriod;
+    const iceTotalForPeriod = iceTotalYearly * inputs.ownershipPeriod;
+
+
+    updateUI({ ...inputs, selectedByd, bydYearlyEnergyCost, bydTotalYearly, iceYearlyEnergyCost, iceTotalYearly, yearlySavings, totalSavings, bydTotalForPeriod, iceTotalForPeriod });
+}
+
+
+function updateUI(results) {
+    elements.resultSection.style.display = 'block';
+    setTimeout(() => { elements.resultSection.style.opacity = 1; }, 10);
+
+
+    // Show or hide conditional videos based on selection
+    const modelKey = results.modelKey;
+    elements.sealionVideoSection.style.display = modelKey === 'sealion7_premium' ? 'block' : 'none';
+    elements.atto1VideoSection.style.display = modelKey === 'atto1_premium' ? 'block' : 'none';
+    elements.dolphinVideoSection.style.display = modelKey === 'dolphin_premium' ? 'block' : 'none';
+    elements.atto3VideoSection.style.display = modelKey === 'atto3_superior' ? 'block' : 'none';
+    elements.sealVideoSection.style.display = modelKey === 'seal_premium' ? 'block' : 'none';
+    elements.m6VideoSection.style.display = modelKey === 'm6_superior' ? 'block' : 'none';
+    elements.denzaVideoSection.style.display = modelKey === 'denza_d9' ? 'block' : 'none';
+
+
+    elements.bydModelNameResult.innerText = results.selectedByd.name;
+    elements.bydSpecInfo.innerHTML = `Baterai: <strong>${results.selectedByd.battery} kWh</strong> | Jangkauan: <strong>${results.selectedByd.range} km</strong>`;
+    
+    // Display annual costs for individual items
+    elements.bydEnergyCost.innerText = formatCurrency(results.bydYearlyEnergyCost);
+    elements.bydServiceCost.innerText = formatCurrency(results.annualServiceByd);
+    elements.bydTaxCost.innerText = formatCurrency(results.annualTaxByd);
+    elements.iceEnergyCost.innerText = formatCurrency(results.iceYearlyEnergyCost);
+    elements.iceServiceCost.innerText = formatCurrency(results.annualServiceIce);
+    elements.iceTaxCost.innerText = formatCurrency(results.annualTaxIce);
+
+
+    // Update labels and display total costs for the selected period
+    const periodText = `(${results.ownershipPeriod} TAHUN)`;
+    elements.bydPeriodLabel.innerText = periodText;
+    elements.icePeriodLabel.innerText = periodText;
+    elements.bydTotalYearly.innerText = formatCurrency(results.bydTotalYearly);
+    elements.iceTotalYearly.innerText = formatCurrency(results.iceTotalYearly);
+    elements.bydTotalForPeriod.innerText = formatCurrency(results.bydTotalForPeriod);
+    elements.iceTotalForPeriod.innerText = formatCurrency(results.iceTotalForPeriod);
+
+
+    // Update savings section
+    elements.yearlySavings.innerText = formatCurrency(results.yearlySavings > 0 ? results.yearlySavings : 0);
+    elements.totalSavingsLabel.innerText = `Dalam ${results.ownershipPeriod} Tahun`;
+    elements.totalSavings.innerText = formatCurrency(results.totalSavings > 0 ? results.totalSavings : 0);
+
+
+    updateChart(results);
+    displayComparison(results.modelKey);
+}
+
+
+function updateChart(results) {
+    const data = {
+        labels: ['Energi', 'Servis', 'Pajak'],
+        datasets: [
+            { label: `BYD (${formatCurrency(results.bydTotalYearly)})`, data: [results.bydYearlyEnergyCost, results.annualServiceByd, results.annualTaxByd], backgroundColor: 'rgba(0, 58, 112, 0.7)' },
+            { label: `Bensin (${formatCurrency(results.iceTotalYearly)})`, data: [results.iceYearlyEnergyCost, results.annualServiceIce, results.annualTaxIce], backgroundColor: 'rgba(220, 38, 38, 0.7)' }
+        ]
+    };
+    if (comparisonChart) {
+        comparisonChart.data = data;
+        comparisonChart.update();
+    } else {
+        comparisonChart = new Chart(elements.chartCanvas, {
+            type: 'bar', data: data,
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: (c) => `${c.dataset.label.split('(')[0]}: ${formatCurrency(c.raw)}` } } },
+                scales: { y: { beginAtZero: true, ticks: { callback: (v) => formatCurrency(v) } } }
+            }
+        });
+    }
+}
+
+
+function displayComparison(modelKey) {
+    const selectedByd = bydData[modelKey];
+    const competitors = competitorData[modelKey];
+    if (!competitors) {
+        elements.comparisonContainer.innerHTML = '';
+        return;
+    }
+
+
+    let icePriceHtml = '<div class="price-list">';
+    competitors.ice.forEach(car => {
+        icePriceHtml += `<div><strong>${car.name}:</strong> ${car.price}</div>`;
+    });
+    icePriceHtml += '</div>';
+    
+    let bydFeaturesHtml = '<ul class="features-list">';
+    selectedByd.features.forEach(feature => {
+        bydFeaturesHtml += `<li>${feature}</li>`;
+    });
+    bydFeaturesHtml += '</ul>';
+    
+    const hasEvCompetitor = competitors.ev;
+    const evCompetitorHeader = hasEvCompetitor ? `<th>Kompetitor EV (${competitors.ev.name})</th>` : '';
+    const evPriceCell = hasEvCompetitor ? `<td>${competitors.ev.price}</td>` : '';
+    const evBatteryCell = hasEvCompetitor ? `<td>${competitors.ev.battery || '-'}</td>` : '';
+    const evRangeCell = hasEvCompetitor ? `<td>${competitors.ev.range || '-'}</td>` : '';
+    const evFeatureCell = hasEvCompetitor ? `<td>-</td>` : '';
+
+
+
+
+    const tableHTML = `
+    <h3 class="text-xl font-bold byd-blue text-center mb-4">Perbandingan Harga & Fitur Kunci</h3>
+    <div class="overflow-x-auto">
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>Fitur</th>
+                <th class="highlight">${selectedByd.name}</th>
+                ${evCompetitorHeader}
+                <th>Kompetitor ICE</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Harga (OTR)</td>
+                <td class="highlight">${selectedByd.price}</td>
+                ${evPriceCell}
+                <td>${icePriceHtml}</td>
+            </tr>
+            <tr>
+                <td>Kapasitas Baterai</td>
+                <td class="highlight">${selectedByd.battery} kWh</td>
+                ${evBatteryCell}
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Jarak Tempuh</td>
+                <td class="highlight">${selectedByd.range} km</td>
+                ${evRangeCell}
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Fitur Unggulan</td>
+                <td class="highlight">${bydFeaturesHtml}</td>
+                ${evFeatureCell}
+                <td>-</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>`;
+
+
+    elements.comparisonContainer.innerHTML = tableHTML;
+    if (elements.comparisonContainer.classList.contains('hidden-initially')) {
+        elements.comparisonContainer.classList.remove('hidden-initially');
+    }
+    setTimeout(() => {
+        elements.comparisonContainer.style.maxHeight = elements.comparisonContainer.scrollHeight + "px";
+        elements.comparisonContainer.style.opacity = 1;
+    }, 0);
+}
+
+
+// --- EVENT LISTENERS ---
+elements.calculateBtn.addEventListener('click', runCalculation);
+
+
+elements.bydModel.addEventListener('change', () => {
+    runCalculation(); // Run calculation to show/hide videos
+    const selectedByd = bydData[elements.bydModel.value];
+    if (selectedByd) {
+        elements.bydSpecInfo.innerHTML = `Baterai: <strong>${selectedByd.battery} kWh</strong> | Jangkauan: <strong>${selectedByd.range} km</strong>`;
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    runCalculation();
+    const selectedByd = bydData[elements.bydModel.value];
+    if(selectedByd) {
+         elements.bydSpecInfo.innerHTML = `Baterai: <strong>${selectedByd.battery} kWh</strong> | Jangkauan: <strong>${selectedByd.range} km</strong>`;
+    }
+});
+</script>
+</body>
+</html>
+
+
+
+
+
